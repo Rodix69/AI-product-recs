@@ -31,21 +31,21 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       });
-      const data = await res.json();
+
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(`Server returned an unexpected response (${res.status}).`);
+      }
+
       if (!res.ok) throw new Error(data.error || "Request failed");
       setRecommendedIds(data.ids);
       setReason(data.reason);
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
     }
-  }
-
-  function reset() {
-    setRecommendedIds(null);
-    setReason("");
-    setQuery("");
   }
 
   const visible =
