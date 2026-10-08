@@ -1,6 +1,6 @@
 import { products } from "../src/products.js";
 
-const MODEL = "gemini-3.6-flash"; // if this errors, try "gemini-2.0-flash"
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
