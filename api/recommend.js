@@ -53,7 +53,11 @@ Keep "reason" to one short sentence.`;
     if (r.status === 429) {
       return res.status(429).json({ error: "Rate limit reached. Try again in a minute." });
     }
-    if (!r.ok) return res.status(502).json({ error: "AI service error" });
+    if (!r.ok) {
+      const detail = await r.text();
+      console.error("Gemini error", r.status, detail);
+      return res.status(502).json({ error: `AI service error (${r.status})` });
+    }
 
     const data = await r.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -65,6 +69,7 @@ Keep "reason" to one short sentence.`;
 
     return res.status(200).json({ ids, reason: parsed.reason || "" });
   } catch (e) {
+    console.error("Handler crashed:", e);
     return res.status(500).json({ error: "Something went wrong" });
   }
 }
