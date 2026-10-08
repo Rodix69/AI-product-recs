@@ -45,7 +45,15 @@ export default function App() {
       setReason(data.reason);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  function reset() {
+    setRecommendedIds(null);
+    setReason("");
+    setQuery("");
   }
 
   const visible =
